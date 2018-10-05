@@ -1,0 +1,80 @@
+% % Title and author(s)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{CS 703 Progress Report}
+\author{Xiating Ouyang}
+\date{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %
+% % The next command allows your in import encapsulated
+% % postscript files, .epsf or .eps files, which
+% % contain vector graphic image data.
+% %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+%\usepackage{charter,eulervm}
+
+%\renewcommand{\baselinestretch}{1.5}
+
+\usepackage{amsthm,amsmath,amssymb,upgreek,marvosym,mathtools}
+\usepackage{array}
+\usepackage{makeidx}  % allows for indexgeneration
+\usepackage{paralist}
+\usepackage{subfig}
+\usepackage{tabularx}
+\usepackage{tabu}
+\usepackage[nottoc]{tocbibind}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage[pdftex,breaklinks,colorlinks,citecolor={blue}, linkcolor={blue},urlcolor=Maroon]{hyperref}
+\usepackage{tkz-graph}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=25mm,
+ top=20mm,
+ right=25mm,
+ }
+\usetikzlibrary{automata, positioning,arrows,shapes,decorations.pathmorphing}
+
+ \tikzset{
+->, % makes the edges directed
+>=stealth, % makes the arrow heads bold
+node distance=3cm, % specifies the minimum distance between two nodes. Change if necessary.
+every state/.style={thick, fill=gray!10}, % sets the properties for each ’state’ node
+initial text=$ $, % sets the text that appears on the start arrow
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{reduction}{Reduction}
+\newtheorem{proposition}{Proposition}
+\newtheorem{scolium}{Scolium}   %% And a not so common one.
+\newtheorem{definition}{Definition}
+%\newenvironment{proof}{{\sc Proof:}}{~\hfill QED}
+\newenvironment{AMS}{}{}
+\newenvironment{keywords}{}{}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\newcommand{\todo}{(TO BE CONTINUED...)}
+\newcommand{\trans}[1]{
+	#1^\mathsf{T}
+}
+
+\begin{document}
+\newpage
+\maketitle
+
+\section{Project selection}
+The term project is finally settled to be synthesis by examples with a focus on studying the expected size of the maximum clique in a graph following some random distributions. The ultimate goal is to find some probablistic graph models on which the synthesis by examples works practically.
+
+\section{Current progress}
+The current research work involves reviewing existing literatures on graph models \cite{aiello2000random,easley2010networks} and the history of this problem \cite{gulwani2012spreadsheet,rolim2017learning,d2017nofaq}. 
+
+From the implementation perspective, a program generating Erd\H{o}s-R\'enyi graph and computing the maximal cliques have been completed for future testing purposes. The implementation of generation of power law graphs is also undergoing [].
+
+ 
+\bibliography{progress}{}
+\bibliographystyle{plain}
+
+\end{document}
