@@ -4,6 +4,7 @@
 *.log
 *.bbl
 *.aux
+*.out
 
 
 # Byte-compiled / optimized / DLL files
