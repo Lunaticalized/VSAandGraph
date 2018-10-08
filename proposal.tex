@@ -65,14 +65,67 @@ initial text=$ $, % sets the text that appears on the start arrow
 \newpage
 \maketitle
 
+
+% The statement of the problem to be investigated
+
+% An explanation of why the problem is interesting
+
+% A description of what you propose to do,
+% Explain the elements that you will have to build
+% Explain the elements that you can pick up from open-source sites
+
+% Explain the experiment(s) or performance measurement(s) that you plan to carry out. Two good approaches are
+% State the hypothesis that you hope to refute.
+
+% Complete the following sentence: ``The experiments were designed to shed light on the following questions: . . .''
+
+% Then explain what you plan to measure; how you will measure it (if it is not obvious); and where you will obtain test cases.
+
+% List the tasks, broken down into two or three milestones
+
 \section{Motivation}
+\label{motivation}
 
 
-\section{Problem formulation}
 
 
-\section{Methodology}
+\section{Preliminaries}
+All graphs discussed in this proposal are undirected and simple. A set of vertices in a graph is a \textit{clique} if there is an edge between each pair of vertices within the set. A clique is \textit{maximal} if it is not properly contained in another clique. A \textit{maximum clique} is a clique with the maximum number of vertices. Note that a graph may have multiple maximum cliques. Given a graph $G$, the size of the maximum clique of $G$ is called the \textit{clique number}, denoted by $\omega(G)$.
 
+\section{Problem definition}
+
+The problem this project attempts to address can be formulated as:
+
+\begin{figure}[h!]
+	\centering
+	\tikz\path (0,0) node[draw=white, text width=.90\textwidth, rectangle, rounded corners, inner xsep=20pt, inner ysep=2pt]{
+		\begin{minipage}[t!]{\textwidth}
+			Let $\mathcal{G}$ be a random graph generator and a random graph $G$ with $G \sim \mathcal{G}$. Compute $\mathbf{E}[\omega(G)]$.
+		\end{minipage}
+	};
+\end{figure}
+
+Multiple random graph models have already been carefully studied. One classical example is the Erd\H{o}s-R\'enyi model \cite{erdos1960evolution} in which each pair of vertices in a graph with $n$ vertices has equal probability $p$ of being adjacent. For example, when $p = 1/2$, the clique number of $G$ is at most $(2 + \varepsilon)\log_2(n) + 1$ with high probability, for all $\varepsilon > 0$ \cite{danielSpielman}. Power Law graphs characterize the networks in which the number of vertices with a certain degree $k$ is propotional to $1/k^c$ for some constant $c$, and such a model is studied in \cite{aiello2000random}, but an estimation of the size of the maximum clique is not present in the work. 
+
+
+\section{Action plan}
+We propose to investigate the power law graph model and derive a bound for the size of the maximum cliques in the power law graphs for different parameter $c$. Our expectation is that for smaller $c$ the maximum clique size should be larger, as more vertices have large degrees and hence more likely larger cliques may be present. However, this still needs to be supported by proofs and experiments.
+
+In addition to the power law graph model, we plan to find another appropriate random graph model for the programming by example setting. Hence we propose to research on the existing random graph models that have interesting properties\cite{easley2010networks}, and study the input/output examples from real data to extract some succint models out of it.
+
+
+\section{Deliverables and milestones}
+The milestones for the projects are as follows.
+\begin{enumerate}
+	\item Oct 21: Finish implementing the Power Law graph model.
+	\item Oct 23: Finish reviewing the literature\footnote{A not so measurable milestone, but still critical.}.
+	\item Oct 26: Finish constructing new plausible models.
+	\item Nov 12: Proof sketch for power law graph model and new models if available.
+	\item Nov 18: Finish implementing and experiments on the new model if possible.
+	\item Dec 2: Finish report write-up and slides preparation.
+\end{enumerate}
+
+While the experiments demonstrate the result in a Construction of new models 
 
 
 \bibliography{progress}{}
