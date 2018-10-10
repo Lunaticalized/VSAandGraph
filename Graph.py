@@ -43,6 +43,36 @@ class Graph:
 					cnt += 1
 		self.m = cnt
 		self.edges = edge
+
+	def powerLawTree(self, n, p):
+		self.n = n
+		import random
+		degs = [0 for i in range(n)]
+		points = [-1 for i in range(n)]
+		points[0] = 0
+		for i in range(1, n):
+			j = int(random.random() * i)
+			if random.random() <= p:
+				points[i] = j
+			else:
+				points[i] = points[j]
+		points[0] = -1
+		edges = [[] for i in range(n)]
+		adj = [[False for i in range(n)] for j in range(n)]
+		cnt = 0
+		for i in range(n):
+			if points[i] >= 0:
+				edges[i].append(points[i])
+				edges[points[i]].append(i)
+				adj[i][points[i]] = True
+				adj[points[i]][i] = True
+				cnt += 1
+
+		self.edges = edges
+		self.m = cnt
+		self.adj = adj
+
+
 	def isClique(self, v, c):
 		for u in c:
 			if not self.adj[u][v]:
@@ -73,6 +103,8 @@ class Graph:
 
 if __name__ == "__main__":
 	g = Graph()
-	g.erdos(1000, 0.1)
+	#g.erdos(1000, 0.1)
+	#g.print_graph()
+	g.powerLawTree(100, 0.9)
 	g.print_graph()
-	print g.find_maximal_cliques(0)
+	#print g.find_maximal_cliques(0)
