@@ -107,4 +107,4 @@ if __name__ == "__main__":
 	#g.print_graph()
 	g.powerLawTree(100, 0.9)
 	g.print_graph()
-	#print g.find_maximal_cliques(0)
+	print g.find_maximal_cliques(0)
