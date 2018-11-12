@@ -1,9 +1,4 @@
-*.blg
-*.log
-*.bbl
-*.aux
-*.out
-*.pdf
+doc/*
 
 
 # Byte-compiled / optimized / DLL files
