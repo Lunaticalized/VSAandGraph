@@ -1,4 +1,10 @@
-doc/*
+doc/
+data/
+ref/
+prose-benchmarks/
+proj/bin/
+proj/obj/
+proj/.vs/
 
 
 # Byte-compiled / optimized / DLL files
