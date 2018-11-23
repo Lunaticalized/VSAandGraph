@@ -1,3 +1,9 @@
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+import networkx as nx
+import random
+
 class Graph:
 
 	"""
@@ -139,7 +145,7 @@ class Graph:
 						cliques[i].append(u)
 						break
 				missing += len(cand) - 1
-		print str(missing) + " edges missing (unused)."
+		print str(missing) + " edges missing (unused)/"+str(len(self.all_edges)) 
 		return cliques
 
 
@@ -149,12 +155,9 @@ class Graph:
 
 	"""
 
-	def plotDistribution(self):
+	def plotDegDistribution(self):
 		deg = [len(self.edges[v]) for v in range(self.n)]
 
-		import matplotlib.pyplot as plt
-		import numpy as np
-		
 		bins = np.arange(0, max(deg) + 1.5) - 0.5
 		plt.hist(deg, normed=False, bins=bins)
 		plt.xlabel("Vertex degree")
@@ -163,17 +166,76 @@ class Graph:
 
 
 	"""
+		Plot the histogram of the sizes of all maximal cliques
+
+	"""
+	def plotCliqueDistribution(self):
+		c = self.find_maximal_cliques_greedy(0)
+		length = [len(cc) for cc in c]
+		bins = np.arange(0, max(length) + 1.5) - 0.5
+		plt.hist(length, normed=False, bins=bins)
+		plt.xlabel("Maximal clique size")
+		plt.ylabel("Frequency")
+		plt.show()
+
+	"""
 		Plot the graph.
 			Dependency: matplotlib, networkx
 	"""
 	def drawGraph(self):
-		import matplotlib.pyplot as plt
-		import networkx as nx
-
 		gg = nx.Graph()
 		gg.add_nodes_from(self.vertices)
 		gg.add_edges_from(self.all_edges)
 		nx.draw(gg, with_labels=False, node_size=10, alpha=1)	
+		plt.show()
+
+
+
+	def approximatePowerLaw(self):
+		deg = [len(self.edges[v]) for v in range(self.n)]
+
+		m = min(deg)
+		M = max(deg)
+		cnt = {}
+		for d in deg:
+			if d+1 not in cnt:
+				cnt[d+1] = 1
+			else:
+				cnt[d+1] += 1
+		logx = []
+		logy = []
+		x = []
+		y = []
+		for d in range(m, M+1):
+			if d+1 in cnt:
+				logx.append(math.log(d+1))
+				logy.append(math.log(cnt[d+1]))
+				x.append(d)
+				y.append(cnt[d+1])
+
+		logx_avg = 1.0*sum(logx)/len(logx)
+		logy_avg = 1.0*sum(logy)/len(logy)
+
+		s1 = 0
+		s2 = 0
+		for i in range(len(x)):
+			s1 += (logx[i] - logx_avg) * (logy[i] - logy_avg)
+			s2 += (logx[i] - logx_avg) * (logx[i] - logx_avg)
+
+		b = 1.0*s1 / s2
+		a = logy_avg - b * logx_avg
+		  
+		reg = "y = " + str(math.exp(a)) + "/x^"+str(-b)
+
+		def f(d):
+			xx = d + 1
+			return math.exp(a) * xx**(b)
+
+		plt.scatter(x,y)
+		X_plot = np.linspace(m, M,100)
+		plt.plot(X_plot, f(X_plot))
+		plt.xlabel("Vertex degree\nPower law: "+reg)
+		plt.ylabel("Frequency")
 		plt.show()
 
 
@@ -187,7 +249,7 @@ class Erdos(Graph):
 		self.vertices = [i for i in range(self.n)]
 		self.edges = [[] for i in range(n)]
 		self.adj = [[False for i in range(n)] for j in range(n)]
-		import random
+		
 		for i in range(n - 1):
 			for j in range(i + 1, n):
 				if random.random() < p:
@@ -211,7 +273,7 @@ class PowerLaw(Graph):
 		self.add(2, 3)
 		self.add(3, 1)
 
-		import random
+		# import random
 
 		# for v in range(4, n):
 		# 	p = random.random()
@@ -226,25 +288,12 @@ if __name__ == "__main__":
 	#g = Erdos(10, 0.1)
 	# g = PowerLawTree(10, 0.7)
 	g = Graph()
-	dirr = "data/"
-	g.read(dirr+"graph_total_691.txt")
-	#g.read("input")
-	#g.print_graph()
+	directory = "data/graph/"
+	filename = "graph_total_778"
+	g.read(directory+filename + ".txt")
+	#g.drawGraph()
+	g.plotCliqueDistribution()
+	#g.plotDegDistribution()
+
+	#g.approximatePowerLaw()
 	
-	#print g.find_maximal_cliques_growing(0)
-	c = g.find_maximal_cliques_greedy(0)
-
-
-
-	g.drawGraph()
-	
-
-	# length = [len(cc) for cc in c]
-	# bins = np.arange(0, max(length) + 1.5) - 0.5
-	# plt.hist(length, normed=False, bins=bins)
-	# plt.xlabel("Maximal clique size")
-	# plt.ylabel("Frequency")
-	# plt.show()
-
-	# g.plotDistribution()
-	# g.plotDistribution()

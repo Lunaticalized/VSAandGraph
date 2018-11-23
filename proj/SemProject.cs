@@ -15,9 +15,9 @@ namespace proj
 
         private static void Main(string[] args)
         {
-            //LearnFormatName();
+            LearnFormatName();
             // Test();
-            IOModule();
+            // IOModule();
         }
 
         private static void IOModule(){
@@ -58,13 +58,11 @@ namespace proj
                                 string output2 = debris2[1];
 
                                 if (Check(input1, output1, input2, output2)){
-                                    
                                     file.WriteLine(ret);
                                     res = "Yes";
                                 }
                             }
                             cnt ++;
-
                             Console.WriteLine(ret + "-"+res+"("+cnt.ToString() + "/" + total.ToString() +")");
                         }
                         catch (Exception e)
@@ -144,7 +142,7 @@ namespace proj
                 // Run the program on some new inputs.
                 string programSerialized = topRankedProgram.Serialize();
                 if (programSerialized.Contains("symbol=\"ite\"")){
-                	Console.WriteLine("hahaha");
+                	Console.WriteLine("Conclude that the program uses ite.");
                 }
                 Console.WriteLine(programSerialized);
                	string[] start = {"608 236 3405", "(987) 876 544"};

@@ -2,9 +2,6 @@ import json
 import os
 import random
 
-prob = 1
-threshold = 1000
-
 
 def removeNextLine(s):
     ret = ""
@@ -25,7 +22,7 @@ def plotDistribution(arr):
     plt.ylabel("Frequency")
     plt.show()
 
-def ComputeCorpse(mypath, outname):
+def ComputeCorpse(mypath, outname, prob=1, threshold=1000):
 
     outfile = open(outname, 'w')
     cnt = 0
@@ -56,7 +53,7 @@ def ComputeCorpse(mypath, outname):
                         Output = removeNextLine(ex["Output"])
                         if Input and Output:
                             s = Input + "^" + Output
-                            #print s
+                            print s
                             print >> outfile, s
                             cnt += 1
                     except UnicodeEncodeError:
@@ -79,10 +76,21 @@ def ComputeCorpse(mypath, outname):
     
 
 def main():
+    threshold = 1
+    prob = 66
+    trial = 0
+    for trial in range(1000):
 
-    mypath = "./prose-benchmarks/Transformation.Text/"
-    outname =  "./data/feed_sampled"+str(threshold)+"_"+str(prob)+".txt"    
-    ComputeCorpse(mypath, outname)
+        mypath = "./prose-benchmarks/testing/"
+        outname =  "./data/feed/testing"+str(trial)+"_"+str(threshold)+"_"+str(prob)+".txt"       
+        ComputeCorpse(mypath, outname, prob, threshold)
+    # thresholds = [1, 2]
+    # probs = [1, 0.9]
+
+    # for i in range(len(thresholds)):
+    #     threshold = thresholds[i]
+    #     prob = probs[i]
+    #     ComputeCorpse(mypath, outname, prob, threshold)
     
 
 if __name__ == "__main__":
