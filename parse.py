@@ -73,25 +73,66 @@ def ComputeCorpse(mypath, outname, prob=1, threshold=1000):
         percent = 1.0*len([i for i in lengths if i >= val]) / len(lengths)
         est = 0.1 * round(10 * percent)
     #plotDistribution(lengths)
-    
+
+
+
+
+def sampleForClique():
+    mypath = "./prose-benchmarks/Transformation.Text"
+    outpath = "./data/feed/cliqueTest/"
+    cnt = 0
+    for (dirpath, dirnames, filenames) in os.walk(mypath):
+        for filename in filenames:
+            debris = filename.split('.')
+            if debris[0] == 'spec' and debris[1] == 'json':
+                fname = dirpath + "/" +filename
+                file = open(fname, 'r')
+                outfile = open(outpath + str(cnt) + ".txt", "w")
+                line = file.read()
+                ret = json.loads(line)
+
+                arr = ret["Examples"]
+                
+                for ex in arr:
+                    try:
+                        Input = removeNextLine("|".join(ex["Input"]))
+                        Output = removeNextLine(ex["Output"])
+                        if Input and Output:
+                            s = Input + "^" + Output
+                            print >> outfile, s
+                            cnt += 1
+                    except UnicodeEncodeError:
+                        pass
+                    except TypeError:
+                        pass
+                    except ValueError:
+                        pass 
+                file.close()
+                outfile.close()
+
 
 def main():
     threshold = 1
     prob = 66
     trial = 0
-    for trial in range(1000):
+    # for trial in range(1000):
 
-        mypath = "./prose-benchmarks/testing/"
-        outname =  "./data/feed/testing"+str(trial)+"_"+str(threshold)+"_"+str(prob)+".txt"       
-        ComputeCorpse(mypath, outname, prob, threshold)
-    # thresholds = [1, 2]
-    # probs = [1, 0.9]
+    mypath = "./prose-benchmarks/Transformation.Text"
+    # outname =  "./data/feed/cliqueTest/testing"+str(trial)+"_"+str(threshold)+"_"+str(prob)+".txt"       
+    #     ComputeCorpse(mypath, outname, prob, threshold)
+    # thresholds = [1]
+    # probs = [1]
 
     # for i in range(len(thresholds)):
     #     threshold = thresholds[i]
     #     prob = probs[i]
     #     ComputeCorpse(mypath, outname, prob, threshold)
+
+
+
+    
     
 
 if __name__ == "__main__":
-    main()
+    #main()
+    sampleForClique()

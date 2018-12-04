@@ -81,6 +81,50 @@ class Graph:
 		return True
 
 
+
+
+	"""
+		test if it is a clique
+	"""
+
+	def checkClique(self):
+		for u in self.vertices:
+			for v in self.vertices:
+				if u != v:
+					if not self.adj[u][v]:
+						return False
+		return True
+
+
+	def checkClique(self, set):
+		for u in set:
+			for v in set:
+				if u != v:
+					if not self.adj[u][v]:
+						return False
+		return True
+
+	"""
+		compute the maximum clique
+
+	"""
+
+	def checkMaxClique(self, k):
+		import itertools
+
+		for subset in itertools.combinations(self.vertices, k):
+			if self.checkClique(subset):
+				return True
+		return False
+
+
+	def findMaxClique(self):
+		for k in range(1, self.n+1):
+			if not self.checkMaxClique(k):
+				return k - 1
+		return g.n
+
+
 	"""
 		Procedure to greedily compute all sets of disjoint maximal
 		cliques starting from v
@@ -114,16 +158,40 @@ class Graph:
 			it can be added to. Then choose uniformly from all
 			such cliques.
 
-		This method also reports the number of 
+		This method also reports the number of missing programs
+
+		flag:
+			0 - default order
+			1 - random order
+			2 - deg descending order
+			3 - deg descending with median first
 
 	"""
-	def find_maximal_cliques_greedy(self, v):
+	def find_maximal_cliques_greedy(self, v, flag=1):
 		vertices = [i for i in range(self.n)]
+		degs = [len(self.edges[vv]) for vv in self.vertices]
+		
+		if flag == 1:
+			def compare(x, y):
+				return degs[y] - degs[x]
+
+			vertices.sort(cmp=compare)
+
+
+		if flag == 2:
+			import random
+			random.shuffle(vertices)
+
+		v = vertices[0]
 		vertices.remove(v)
 		cliques = [[v]]
-		missing = 0
+		
+		
+
 		while vertices:
-			u = vertices.pop(0)
+			import random
+			v = vertices.pop(0)
+			u = v
 			cand = []
 			for i in range(len(cliques)):
 				if self.isClique(u, cliques[i]):
@@ -134,20 +202,35 @@ class Graph:
 			elif len(cand) == 1:
 				cliques[cand[0]].append(u)
 			else:
+				
 				sizes = [len(cliques[i]) for i in cand]
 				s = sum(sizes)
-				import random
+				
 				prob = random.random()
 				p = 0
 				for i in cand:
-					p +=  1.0*len(cliques[i]) / s
+					p +=  1.0 * len(cliques[i]) / s
 					if prob <= p:
 						cliques[i].append(u)
 						break
-				missing += len(cand) - 1
-		print str(missing) + " edges missing (unused)/"+str(len(self.all_edges)) 
 		return cliques
 
+
+
+	"""
+		cnt missing programs for a given cluster
+
+	"""
+
+	def countMissingPrograms(self, cliques):
+		missing = 0
+		for v in self.vertices:
+			cnt = 0
+			for c in cliques:
+				if self.checkClique(c + [v]):
+					cnt += 1
+			missing += (cnt - 1)
+		return missing
 
 
 	"""
@@ -225,7 +308,7 @@ class Graph:
 		b = 1.0*s1 / s2
 		a = logy_avg - b * logx_avg
 		  
-		reg = "y = " + str(math.exp(a)) + "/x^"+str(-b)
+		reg = "y = " + str("{0:.2f}".format(round(math.exp(a),2))) + "/x^"+str("{0:.2f}".format(round(-b,2)))
 
 		def f(d):
 			xx = d + 1
@@ -255,44 +338,139 @@ class Erdos(Graph):
 				if random.random() < p:
 					self.add(i, j)
 
+				
+
+
 
 """
-	Implementation of the Power Law graph model
+	The graph class with multiple edges of color
+
 
 """
 
-class PowerLaw(Graph):
+class GraphColor(Graph):
+	def __init__(self):
+		self.n = 0
+		self.m = 0
+		self.colors = []
+		self.vertices = []
+		self.all_edges = []
+		# neighbors
+		self.edges = [{}]
+		
+		# adjacency matrix
+		self.adj = [[]]
 
-	def __init__(self, n, prob):
-		self.n = n
-		self.edges = [[] for i in range(n)]
+
+
+	def add(self, u, v, c):
+		self.adj[u][v] = True
+		self.adj[v][u] = True
+		self.all_edges.append([u, v])
+		if c not in self.edges[v]:
+			self.edges[v][c] = []
+		if c not in self.edges[u]:
+			self.edges[u][c] = []
+
+		if u not in self.edges[v][c] and v not in self.edges[u][c]:
+			self.edges[v][c].append(u)
+			self.edges[u][c].append(v)
+			self.m += 1
+			if c not in self.colors:
+				self.colors.append(c)
+
+	def read(self, filename):
+		file = open(filename, 'r')
+		lines = file.readlines()
+		self.n = int(lines[0])
+		self.m = len(lines) - 1
+		self.vertices = [i for i in range(self.n)]
+		self.edges = [{} for i in range(self.n)]
 		self.adj = [[False for i in range(self.n)] for j in range(self.n)]
 		
-		self.add(0, 1)
-		self.add(1, 2)
-		self.add(2, 3)
-		self.add(3, 1)
+		for i in range(self.m):
+			line = lines[i+1][:-1]
+			if line:
+				br = line.split()
+				u, v, c = int(br[0]), int(br[1]), int(br[2])
+				self.add(u, v, c)
+		file.close()
 
-		# import random
-
-		# for v in range(4, n):
-		# 	p = random.random()
-		# 	if p <= prob:
-				
-		# 	else:
-				
-
+	def printGraph(self):
+		print self.vertices
+		for e in self.edges:
+			print e
 
 
-if __name__ == "__main__":
-	#g = Erdos(10, 0.1)
-	# g = PowerLawTree(10, 0.7)
+	def countProgramLoss(self):
+		cnt = 0
+		for v in self.vertices:
+			cnt += len(self.edges[v]) - 1
+		return cnt
+
+	def countTotalProgram(self):
+		cnt = 0
+		for v in self.vertices:
+			cnt += len(self.edges[v])
+		return cnt
+
+	def metric1(self):
+		if self.countTotalProgram() == 0:
+			return 0
+		return 1.0 * self.countProgramLoss() /self.countTotalProgram()
+
+	def metric2(self):
+		avg = 0
+		cnt = 0
+		for v in self.vertices:
+			a = len(self.edges[v]) - 1
+			if a == -1:
+				val = 0
+			else:
+				val = 1.0 * a / (a + 1)
+			avg = (avg * cnt + val) / (cnt + 1)
+			cnt += 1
+		return avg
+
+	def metric3(self):
+		ret = 0
+		
+		for v in self.vertices:
+			a = len(self.edges[v]) - 1
+			if a == -1:
+				val = 0
+			else:
+				val = 1.0 * a / (a + 1)
+			ret = max(ret, val)
+		return ret
+
+def tryTheSeq():
 	g = Graph()
 	directory = "data/graph/"
-	filename = "graph_total_778"
+	filename = "feed_sampled1_1_345"
 	g.read(directory+filename + ".txt")
 	#g.drawGraph()
-	g.plotCliqueDistribution()
+	avg0 = 0
+	for i in range(1000):
+		c = g.find_maximal_cliques_greedy(0, 0)
+		missing = g.countMissingPrograms(c)
+		avg0 = 1.0 * (avg0 * i + missing) / (i + 1)
+
+	avg2 = 0
+	for i in range(1000):
+		c = g.find_maximal_cliques_greedy(0, 1)
+		missing = g.countMissingPrograms(c)
+		avg2 = 1.0 * (avg2 * i + missing) / (i + 1)
+
+	print avg0, avg2
+	
+
+if __name__ == "__main__":
+	tryTheSeq()
+	
+	
+
+	
 	#g.plotDegDistribution()
 
 	#g.approximatePowerLaw()
