@@ -122,7 +122,7 @@ class Graph:
 		for k in range(1, self.n+1):
 			if not self.checkMaxClique(k):
 				return k - 1
-		return g.n
+		return self.n
 
 
 	"""

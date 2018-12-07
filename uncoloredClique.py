@@ -17,9 +17,16 @@ def process(file, mypath, plot=False):
 	        g = Graph()
 	        g.read(dirpath+filename)
 	        print dirpath + filename
+	        # if g.n <10:
+	        # 	continue
 	        clique = g.find_maximal_cliques_greedy(0)
-	        missing = g.countMissingPrograms(clique)        
-	        maxSize = max([len(c) for c in clique])
+	        missing = g.countMissingPrograms(clique)
+	        if g.n < 30:
+	        	
+	        	maxSize = g.findMaxClique()
+	        else:  
+	        	     
+	        	maxSize = max([len(c) for c in clique])
 	        ratio = maxSize*1.0 / g.n
 
 	        
@@ -66,7 +73,7 @@ def attempts(plot=False):
 	process(file, mypath, plot)
 
 
-attempts()
+hypo3()
 
 
 
