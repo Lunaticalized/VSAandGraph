@@ -59,10 +59,7 @@ def predict(mypath, thre):
     loss = []
     cnt = 0
     losszero = 0
-    M = 0
-    MM = 0
-    m = 1000000
-
+    
     total = 0
     correct = 0
 
@@ -72,25 +69,28 @@ def predict(mypath, thre):
             if "newcolor" in filename:
                 g.read(dirpath+filename)
                 missing2 = g.metric2()  
-                M = max(M, missing2)
-                MM = max(MM, g.n)
-                m = min(m, g.n)
-
+                
                 actual = 0
-                if missing2 > 0.4:
+                if missing2 > 0.25:
                     actual = 1
 
                 predict = 0
 
                 randv = int(g.n * random.random())
-
-                if len(g.edges[randv]) > thre:
+                randu = int(g.n * random.random())
+                if len(g.edges[randv]) > thre and len(g.edges[randu]) > thre:
                     predict = 1
 
                 total += 1
 
                 if predict == actual:
                     correct += 1
+                else:
+                    print "==="
+                    print missing2
+                    print len(g.edges[randv]), thre
+                    print len(g.edges[randu]), thre
+
     if total == 0:
         accu = 1
     else:
@@ -129,9 +129,10 @@ def plotThreshold():
     cat1 = []
     cat2 = []
     cat3 = []
+    low = 0
     cap = 16
-    axis = range(0, cap)
-    for th in range(0, cap):
+    axis = range(low, cap)
+    for th in range(low, cap):
         print "Threshold: " + str(th) + "/" + str(cap-1)
         a1 = pred1(th)
         a2 = pred2(th)
@@ -158,6 +159,6 @@ def computeLoss(withZero):
     hypo2(withZero)
     hypo3(withZero)
 
-computeLoss(False)
-computeLoss(True)
+# computeLoss(False)
+# computeLoss(True)
 plotThreshold()

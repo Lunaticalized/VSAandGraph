@@ -22,39 +22,42 @@ def plotDistribution(arr):
     plt.ylabel("Frequency")
     plt.show()
 
-def ComputeCorpse(mypath, outname, prob=1, threshold=1000):
 
-    outfile = open(outname, 'w')
+def parseAllTasks():
+    TASKS = {}
+    mypath = "./prose-benchmarks/Transformation.Text"
     cnt = 0
-    lengths = []
-    
     for (dirpath, dirnames, filenames) in os.walk(mypath):
-        if random.random() > prob:
+
+        subtask = dirpath.split("/")[-1]
+        task = subtask.split(".")[0]
+        if task == "Transformation":
             continue
+        if task not in TASKS:
+            TASKS[task] = {}
+
+        if subtask not in TASKS[task]:
+            TASKS[task][subtask] = []
+
         for filename in filenames:
+            
             debris = filename.split('.')
             if debris[0] == 'spec' and debris[1] == 'json':
                 fname = dirpath + "/" +filename
                 file = open(fname, 'r')
+                
                 line = file.read()
                 ret = json.loads(line)
-
-                arr = []
+                file.close()
+                arr = ret["Examples"]
                 
-                if len(ret["Examples"]) > threshold:
-                    arr = random.sample(ret["Examples"], threshold)
-                else:
-                    arr = ret["Examples"]
-                
-                lengths.append(len(arr))
                 for ex in arr:
                     try:
                         Input = removeNextLine("|".join(ex["Input"]))
                         Output = removeNextLine(ex["Output"])
                         if Input and Output:
                             s = Input + "^" + Output
-                            print s
-                            print >> outfile, s
+                            TASKS[task][subtask].append(s)
                             cnt += 1
                     except UnicodeEncodeError:
                         pass
@@ -62,24 +65,23 @@ def ComputeCorpse(mypath, outname, prob=1, threshold=1000):
                         pass
                     except ValueError:
                         pass 
-                file.close()
-    print "\n\nTotally " + str(cnt) + " shits found." 
-    outfile.close()
-    
-    lengths.sort()
-    ss = set(lengths)
-    checkpoints = [1.0 * i / 10 for i in range(10)]
-    for val in ss:
-        percent = 1.0*len([i for i in lengths if i >= val]) / len(lengths)
-        est = 0.1 * round(10 * percent)
-    #plotDistribution(lengths)
+    return TASKS
 
-
-
-
-def sampleForClique():
+def hypo1():
     mypath = "./prose-benchmarks/Transformation.Text"
-    outpath = "./data/feed/cliqueTest/"
+    outpath = "./data21/hypo1/"
+
+    if not os.path.exists("./data21/"):
+        os.mkdir("./data21/")
+        os.mkdir("./data21/hypo1/")
+        os.mkdir("./data21/hypo1/result/")
+
+    if not os.path.exists("./data21/hypo1/"):
+        os.mkdir("./data21/hypo1/")
+        os.mkdir("./data21/hypo1/result/")
+
+    if not os.path.exists("./data21/hypo1/result/"):
+        os.mkdir("./data21/hypo1/result/")
     cnt = 0
     for (dirpath, dirnames, filenames) in os.walk(mypath):
         for filename in filenames:
@@ -110,29 +112,103 @@ def sampleForClique():
                 file.close()
                 outfile.close()
 
-
-def main():
-    threshold = 1
-    prob = 66
-    trial = 0
-    # for trial in range(1000):
-
+def hypo2():
     mypath = "./prose-benchmarks/Transformation.Text"
-    # outname =  "./data/feed/cliqueTest/testing"+str(trial)+"_"+str(threshold)+"_"+str(prob)+".txt"       
-    #     ComputeCorpse(mypath, outname, prob, threshold)
-    # thresholds = [1]
-    # probs = [1]
+    outpath = "./data21/hypo2/"
 
-    # for i in range(len(thresholds)):
-    #     threshold = thresholds[i]
-    #     prob = probs[i]
-    #     ComputeCorpse(mypath, outname, prob, threshold)
+    if not os.path.exists("./data21/"):
+        os.mkdir("./data21/")
+        os.mkdir("./data21/hypo2/")
+        os.mkdir("./data21/hypo2/result/")
+
+    if not os.path.exists("./data21/hypo2/"):
+        os.mkdir("./data21/hypo2/")
+        os.mkdir("./data21/hypo2/result/")
+
+    if not os.path.exists("./data21/hypo2/result/"):
+        os.mkdir("./data21/hypo2/result/")
 
 
+    TASKS = parseAllTasks()
+    
+    cnt = 0
+    
+    for task in TASKS:
+        outfile = open(outpath + task + ".txt", "w")
+        examples = []
+        for subtask in TASKS[task]:
+            subex = random.sample(TASKS[task][subtask], min(2, len(TASKS[task][subtask])))
+            examples += subex
+        print len(examples)
+        print examples
+
+        for ex in examples:
+            try:
+                print >> outfile, ex
+                cnt += 1
+            except UnicodeEncodeError:
+                pass
+            except TypeError:
+                pass
+            except ValueError:
+                pass 
+
+        outfile.close()
 
     
+
+
+def hypo3():
+    mypath = "./prose-benchmarks/Transformation.Text"
+    outpath = "./data21/hypo3/"
+
+
+    if not os.path.exists("./data21/"):
+        os.mkdir("./data21/")
+        os.mkdir("./data21/hypo3/")
+        os.mkdir("./data21/hypo3/result/")
+
+    if not os.path.exists("./data21/hypo3/"):
+        os.mkdir("./data21/hypo3/")
+        os.mkdir("./data21/hypo3/result/")
+
+    if not os.path.exists("./data21/hypo3/result/"):
+        os.mkdir("./data21/hypo3/result/")
+
+    TASKS = parseAllTasks()
+    
+    cnt = 0
+    
+    for cnt in range(1000):
+        outfile = open(outpath + str(cnt) + ".txt", "w")
+        allthings = []
+        for task in TASKS:
+            examples = []
+            for subtask in TASKS[task]:
+                examples += TASKS[task][subtask]
+            
+            allthings += (random.sample(examples, 1))
+
+        
+        for ex in allthings:
+            try:
+                print >> outfile, ex
+                cnt += 1
+            except UnicodeEncodeError:
+                pass
+            except TypeError:
+                pass
+            except ValueError:
+                pass 
+
+        outfile.close()
+
+
+def main():
+    hypo1()
+    hypo2()
+    hypo3()
     
 
 if __name__ == "__main__":
-    #main()
-    sampleForClique()
+    main()
