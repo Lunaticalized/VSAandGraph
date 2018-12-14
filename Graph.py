@@ -280,25 +280,28 @@ class Graph:
 		m = min(deg)
 		M = max(deg)
 		cnt = {}
+		gap = 1.2
 		for d in deg:
-			if d+1 not in cnt:
-				cnt[d+1] = 1
+			if d == 0:
+				continue
+			if d+gap not in cnt:
+				cnt[d+gap] = 1
 			else:
-				cnt[d+1] += 1
+				cnt[d+gap] += 1
 		logx = []
 		logy = []
 		x = []
 		y = []
 		for d in range(m, M+1):
-			if d+1 in cnt:
-				logx.append(math.log(d+1))
-				logy.append(math.log(cnt[d+1]))
+			if d+gap in cnt:
+				logx.append(math.log(d+gap))
+				logy.append(math.log(cnt[d+gap]))
 				x.append(d)
-				y.append(cnt[d+1])
+				y.append(cnt[d+gap])
 
 		logx_avg = 1.0*sum(logx)/len(logx)
 		logy_avg = 1.0*sum(logy)/len(logy)
-
+		print cnt
 		s1 = 0
 		s2 = 0
 		for i in range(len(x)):

@@ -17,8 +17,7 @@ def process(file, mypath, plot=False):
 	        g = Graph()
 	        g.read(dirpath+filename)
 	        print dirpath + filename
-	        # if g.n <10:
-	        # 	continue
+	        
 	        clique = g.find_maximal_cliques_greedy(0)
 	        missing = g.countMissingPrograms(clique)
 	        if g.n < 30:
@@ -32,7 +31,6 @@ def process(file, mypath, plot=False):
 	        
 	        if plot:
 	        	g.drawGraph()
-		        #g.plotDegDistribution()
 		        g.approximatePowerLaw()
 
 	        avgRatio = (avgRatio * cnt + ratio) / (cnt + 1)
@@ -40,13 +38,11 @@ def process(file, mypath, plot=False):
 	        avgN = (avgN * cnt + g.n + 0.0) / (cnt + 1)
 	        cnt += 1
 	        M = max(M, g.n)
-	        #print filename, missing, maxSize, ratio
 	print "Processed", cnt
 	print "avg max clique size", avgCliq
 	print "avg graph size", avgN
 	print "avg ratio", avgRatio  
 	print M
-	#print avgRatio, avgCliq, avgN
 
 def hypo1(plot=False):
 	file = "hypo1.txt"
@@ -56,7 +52,7 @@ def hypo1(plot=False):
 
 def hypo2(plot=False):
 	file = "hypo2.txt"
-	mypath = "./data/sample2repeat100/result/"
+	mypath = "./data/hypo2/result/"
 	process(file, mypath, plot)
 
 
@@ -73,7 +69,7 @@ def attempts(plot=False):
 	process(file, mypath, plot)
 
 
-hypo3()
+hypo3(True)
 
 
 
